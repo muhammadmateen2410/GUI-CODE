@@ -1,0 +1,128 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.hospitalmanagementsystem;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+
+class Patient {
+    String name;
+    int age;
+    String gender;
+    String contact;
+
+    public Patient(String name, int age, String gender, String contact) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.contact = contact;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", Age: " + age + ", Gender: " + gender + ", Contact: " + contact;
+    }
+}
+
+class HospitalManagementSystem extends JFrame {
+    private ArrayList<Patient> patients;
+    private JTextArea outputTextArea;
+
+    public HospitalManagementSystem() {
+        patients = new ArrayList<>();
+
+        setTitle("Hospital Management System");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        createUI();
+    }
+
+    private void createUI() {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        outputTextArea = new JTextArea();
+        outputTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(outputTextArea);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        JButton addButton = new JButton("Add Patient");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPatient();
+            }
+        });
+
+        JButton saveButton = new JButton("Save to File");
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveToFile();
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(addButton);
+        buttonPanel.add(saveButton);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        loadFromFile(); // Load existing data from file if any
+
+        add(mainPanel);
+    }
+
+    private void addPatient() {
+        String name = JOptionPane.showInputDialog("Enter patient name:");
+        int age = Integer.parseInt(JOptionPane.showInputDialog("Enter patient age:"));
+        String gender = JOptionPane.showInputDialog("Enter patient gender:");
+        String contact = JOptionPane.showInputDialog("Enter patient contact:");
+
+        Patient patient = new Patient(name, age, gender, contact);
+        patients.add(patient);
+        updateOutputTextArea();
+    }
+
+    private void updateOutputTextArea() {
+        outputTextArea.setText("");
+        for (Patient patient : patients) {
+            outputTextArea.append(patient.toString() + "\n");
+        }
+    }
+
+    private void saveToFile() {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("patients.dat"))) {
+            outputStream.writeObject(patients);
+            JOptionPane.showMessageDialog(this, "Data saved to file successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error saving data to file.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadFromFile() {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("patients.dat"))) {
+            patients = (ArrayList<Patient>) inputStream.readObject();
+            updateOutputTextArea();
+        } catch (IOException | ClassNotFoundException e) {
+            // Ignore if the file does not exist or cannot be read
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new HospitalManagementSystem().setVisible(true);
+            }
+        });
+    }
+}
