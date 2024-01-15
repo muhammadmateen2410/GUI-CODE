@@ -1,0 +1,164 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.coursemanagementsystem;
+
+
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+class Student implements Serializable {
+    private int studentID;
+    private String name;
+    private List<String> enrolledCourses;
+
+    public Student(int studentID, String name) {
+        this.studentID = studentID;
+        this.name = name;
+        this.enrolledCourses = new ArrayList<>();
+    }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getEnrolledCourses() {
+        return enrolledCourses;
+    }
+}
+
+class Course implements Serializable {
+    private String courseCode;
+    private String courseName;
+    private String instructor;
+
+    public Course(String courseCode, String courseName, String instructor) {
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+        this.instructor = instructor;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public String getInstructor() {
+        return instructor;
+    }
+}
+
+class FileHandler {
+    public static void saveStudents(List<Student> students, String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(students);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Student> loadStudents(String fileName) {
+        List<Student> students = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            students = (List<Student>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    public static void saveCourses(List<Course> courses, String fileName) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(courses);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Course> loadCourses(String fileName) {
+        List<Course> courses = new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            courses = (List<Course>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+}
+
+public class Aqib {
+    private JFrame frame;
+    private JButton addStudentButton;
+    private JButton addCourseButton;
+    private JButton enrollStudentButton;
+
+    private List<Student> students;
+    private List<Course> courses;
+
+    public Aqib() {
+        frame = new JFrame("Course Management System - Aqib");
+        addStudentButton = new JButton("Add Student");
+        addCourseButton = new JButton("Add Course");
+        enrollStudentButton = new JButton("Enroll Student");
+
+        // Set up GUI components
+        addStudentButton.setBounds(50, 50, 150, 30);
+        addCourseButton.setBounds(50, 100, 150, 30);
+        enrollStudentButton.setBounds(50, 150, 150, 30);
+
+        // Add components to the frame
+        frame.add(addStudentButton);
+        frame.add(addCourseButton);
+        frame.add(enrollStudentButton);
+
+        // Set up event listeners
+        addStudentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle "Add Student" button click
+                // Implement your logic here
+                JOptionPane.showMessageDialog(frame, "Add Student button clicked!");
+            }
+        });
+
+        addCourseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle "Add Course" button click
+                // Implement your logic here
+                JOptionPane.showMessageDialog(frame, "Add Course button clicked!");
+            }
+        });
+
+        enrollStudentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle "Enroll Student" button click
+                // Implement your logic here
+                JOptionPane.showMessageDialog(frame, "Enroll Student button clicked!");
+            }
+        });
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Aqib());
+    }
+}
